@@ -1,0 +1,199 @@
+{% extends '_base.html' %}
+{% load crispy_forms_tags %}
+
+
+{% block main %}
+    <br>
+    <div class="container z-1">
+        <div class="grid grid-cols-12 sm:grid-cols-12 md:grid-cols-12 lg:grid-cols-12 xl:grid-cols-12 gap-4 mb-4 justify-center">
+            <div class="col-span-12 sm:col-span-12  md:col-span-12 lg:col-span-12 xl:col-span-12 ">
+                <div class=" w-full relative mb-10">
+                    <div class="flex-auto p-4">
+                        <div class="text-center mt-10">
+                            <h4 class="my-1 font-semibold text-[30px] md:text-[40px] dark:text-slate-200 mb-5 leading-12">
+                                Blogs Section For Everyone</h4>
+                            <h6 class="text-gray-500 dark:text-gray-400 text-lg font-medium">Lorem Ipsum is simply dummy
+                                text of the printing <br> and typesetting industry.</h6>
+                        </div>
+                    </div><!--end card-body-->
+                </div> <!--end card-->
+            </div><!--end col-->
+        </div><!--end inner-grid-->
+        <div class="grid grid-cols-12 sm:grid-cols-12 md:grid-cols-12 lg:grid-cols-12 xl:grid-cols-12 gap-4 mb-4">
+            <div class="col-span-12 sm:col-span-12  md:col-span-12 lg:col-span-8 xl:col-span-9 ">
+
+
+                <div class="bg-white dark:bg-gray-800/40 backdrop-blur-2xl  rounded-2xl shadow-lg w-full relative p-4 mb-4">
+                    <div class="flex justify-between">
+                        <p class="dark:text-slate-200">
+                            <span class="font-medium border-b border-dashed border-pink-400">{{ post.title }}</span>
+                        </p>
+                        <p class="dark:text-slate-200">
+                            <span class="font-medium">Today </span>: {% now "jS F Y H:i" %}
+                        </p>
+                    </div>
+                </div>
+
+                <!--end card-->
+
+                <div class="bg-white dark:bg-gray-800/40 backdrop-blur-2xl  rounded-2xl shadow-lg w-full relative p-4">
+                    <div class="grid grid-cols-12 sm:grid-cols-12 md:grid-cols-12 lg:grid-cols-12 xl:grid-cols-12 gap-4">
+                        <div class="col-span-12 sm:col-span-6  md:col-span-4 lg:col-span-4 xl:col-span-4 ">
+                            {% if post.logo %}
+                                <img src="{{ post.logo.url }}" alt="" class="max-w-full h-auto rounded-xl">
+                            {% else %}
+                                <img src="" alt="404" class="max-w-full h-auto rounded-xl">
+
+                            {% endif %}
+                        </div><!--end col-->
+                        <div class="col-span-12 sm:col-span-6  md:col-span-8 lg:col-span-8 xl:col-span-8 ">
+                            <div class=" h-full flex flex-col p-3">
+                                <div class="w-full block text-lg">
+                                    <a href="{% url 'post_delete' post.slug %}" class="text-[12px] bg-primary-500/10 text-primary-500 dark:text-pink-600 rounded font-medium py-1 px-2 inline-block mb-3">DELETE</a>
+                                    <span class="text-slate-700 dark:text-slate-300 font-normal text-lg ms-2">{{ post.datetime_created }}</span
+
+                                </div>
+                                <br>
+                                {#                        <a href="#"#}
+                                {#                           class="text-[20px] md:text-3xl lg:text-3xl xl:text-[32px] leading-[30px] mb-5 md:mb-0 font-spectral font-semibold  text-gray-800 dark:text-slate-200 block">#}
+                                {#                            {{ post.title }}#}
+                                {#                        </a>#}
+                                <br>
+                                <div class="flex flex-wrap justify-between mt-auto">
+                                    <div class="flex items-center">
+                                        {#                                        <div class="w-8 h-8 rounded">#}
+                                        {#                                            <img class="w-full h-full overflow-hidden object-cover rounded object-center"#}
+                                        {#                                                 src="assets/images/users/avatar-1.jpg" alt="logo">#}
+                                        {#                                        </div>#}
+                                        <div class="ml-2">
+
+                                            <form action="" method="POST">
+                                                {% csrf_token %}
+                                                {{ form|crispy }}
+                                                <button type="submit" class="bg-pink-500/10">edit</button>
+                                            </form>
+
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div><!--end card-body-->
+                        </div><!--end col-->
+                    </div><!--end grid-->
+                </div> <!--end card-->
+                <br>
+
+
+            </div><!--end col-->
+
+{#            <div class="col-span-12 sm:col-span-12  md:col-span-12 lg:col-span-4 xl:col-span-3 ">#}
+{#                <div class="bg-white dark:bg-gray-800/40 backdrop-blur-2xl  rounded-2xl shadow-lg w-full relative p-4 mb-4">#}
+{#                    <span class="font-medium border-b border-dashed border-pink-400 dark:text-slate-200">Comments</span>#}
+{#                    <nav class="inline-flex space-x-2.5" style="margin-left: 30%">#}
+{#                        {% if comments.has_previous %}#}
+{##}
+{#                        <a class="flex items-center py-2 px-3 rounded font-medium select-none border text-gray-900 bg-white transition-colors hover:border-blue-600 hover:bg-blue-400 hover:text-white"#}
+{#                           href="?cp={{ comments.previous_page_number }}">#}
+{#                            <#}
+{#                        </a>#}
+{#                        {% endif %}#}
+{#                        {% if comments.has_next %}#}
+{##}
+{#                        <a class="flex items-center py-2 px-3 rounded font-medium select-none border text-gray-900 bg-white transition-colors hover:border-blue-600 hover:bg-blue-400 hover:text-white"#}
+{#                           href="?cp={{ comments.next_page_number }}">#}
+{#                            >#}
+{#                        </a>#}
+{#                        {% endif %}#}
+{#                    </nav>#}
+{#                </div>#}
+{#                {% for comment in comments.object_list %}#}
+{#                    <div class="grid grid-cols-12 sm:grid-cols-12 md:grid-cols-12 lg:grid-cols-12 xl:grid-cols-12 gap-4 mb-4">#}
+{#                        <div class="col-span-12 sm:col-span-12  md:col-span-6 lg:col-span-12 xl:col-span-12 ">#}
+{#                            <div class="bg-white dark:bg-gray-800/40 backdrop-blur-2xl  rounded-2xl shadow-lg w-full relative p-4">#}
+{#                                <div class="">#}
+{#                                    <div class="col-span-12 sm:col-span-6  md:col-span-6 lg:col-span-8 xl:col-span-8 ">#}
+{#                                        <div class=" ">#}
+{#                                            <div class="w-full block">#}
+{#                                                <span class="text-[12px] bg-pink-500/10 text-pink-500 dark:text-green-600 rounded font-medium py-0 px-2 inline-block mb-3">{{ comment.author }}</span>#}
+{#                                                <span class="text-[12px] bg-green-500/10 text-green-500 dark:text-green-600 rounded font-medium py-0 px-2 inline-block mb-3">{{ comment.rate }}</span>#}
+{#                                                <span class="text-slate-700 dark:text-slate-300 font-medium text-xs ms-2">{{ comment.datetime_created }}</span>#}
+{#                                            </div>#}
+{#                                            <p class="text-lg ">#}
+{#                                                {{ comment.text }}#}
+{#                                            </p>#}
+{#                                            {% for rep in comment.replies.all %}#}
+{#                                                <br>#}
+{#                                                <hr>#}
+{#                                                <hr>#}
+{#                                                <br>#}
+{#                                                <div style="margin-left: 20px;">#}
+{#                                                    <span class="text-[12px] bg-pink-500/10 text-pink-500 dark:text-green-600 rounded font-medium py-0 px-2 inline-block mb-3">{{ rep.author }}</span>#}
+{#                                                    <p>{{ rep.text }}</p>#}
+{#                                                </div>#}
+{#                                            {% endfor %}#}
+{##}
+{##}
+{#                                            <div style="margin-top: 10%; color: #2e51e6">#}
+{#                                                <a href="?{{ request.GET.urlencode }}&reply_to={{ comment.pk }}">reply</a>#}
+{#                                            </div>#}
+{#                                        </div><!--end card-body-->#}
+{#                                    </div><!--end col-->#}
+{#                                </div><!--end grid-->#}
+{#                            </div> <!--end card-->#}
+{#                        </div><!--end col-->#}
+{#                    </div><!--end grid-->#}
+{#                {% endfor %}#}
+{#                <div class="grid grid-cols-12 sm:grid-cols-12 md:grid-cols-12 lg:grid-cols-12 xl:grid-cols-12 gap-4 mb-4">#}
+{#                    <div class="col-span-12 sm:col-span-12  md:col-span-6 lg:col-span-12 xl:col-span-12 ">#}
+{#                        <div class="bg-white dark:bg-gray-800/40 backdrop-blur-2xl  rounded-2xl shadow-lg w-full relative p-4">#}
+                            {#                            <form action="" method="POST">#}
+                            {#                                {% csrf_token %}#}
+                            {#                                {{ form.as_div }}#}
+                            {#                                <button type="submit" class="btn btn">send</button>#}
+                            {#                            </form>#}
+{#                            <form action="{% if request.GET.reply_to %}?{{ request.GET.urlencode }}{% endif %}" method="POST" class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">#}
+{#                                {% csrf_token %}#}
+{#                                {{ form.errors }}#}
+{#                                <div class="mb-4">#}
+{#                                    <label class="block text-gray-700 text-sm font-bold mb-2" for="text">#}
+{#                                        Text#}
+{#                                    </label>#}
+                                    {#                                    <textarea name="" id="" cols="30" rows="10"></textarea>#}
+{#                                    <textarea#}
+{#                                            class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"#}
+{#                                            id="text" type="" placeholder="say somthing" name="text"#}
+{#                                            required></textarea>#}
+{#                                </div>#}
+{#                                <div class="mb-6">#}
+{#                                    <label class="block text-gray-700 text-sm font-bold mb-2" for="rate">#}
+{#                                        Rate#}
+{#                                    </label>#}
+{#                                    <select id="rate" name="rate"#}
+{#                                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">#}
+{#                                        {% for choice in form.rate.field.choices %}#}
+{#                                            {% if choice.1 != '---------' %}#}
+{#                                                <option value="{{ choice.1 }}">{{ choice.1 }}</option>#}
+{#                                            {% endif %}#}
+{#                                        {% endfor %}#}
+{#                                    </select>#}
+{##}
+{#                                </div>#}
+{#                                <br>#}
+{#                                <div>#}
+{#                                    <button type="submit"#}
+{#                                            class="bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded">#}
+{#                                        send#}
+{#                                    </button>#}
+{#                                </div>#}
+{##}
+{#                            </form>#}
+{#                        </div> <!--end card-->#}
+{#                    </div><!--end col-->#}
+{##}
+{#                </div><!--end grid-->#}
+{#            </div><!--end col-->#}
+
+        </div><!--end inner-grid-->
+    </div>
+
+{% endblock %}

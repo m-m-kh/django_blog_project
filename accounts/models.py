@@ -3,4 +3,7 @@ from django.contrib.auth.models import AbstractUser
 # Create your models here.
 
 class CustomUser(AbstractUser):
-    pass
+    profile_id = models.CharField(max_length=100, unique=True, default='0')
+    email = models.EmailField(unique=True)
+    # USERNAME_FIELD = 'email'
+    # REQUIRED_FIELDS = []

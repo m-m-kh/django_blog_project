@@ -48,6 +48,7 @@
                                     <div class="w-full block">
                                         <span class="text-[12px] bg-pink-500/10 text-pink-500 dark:text-pink-600 rounded font-medium py-1 px-2 inline-block mb-3">UPLOAD DATE</span>
                                         <span class="text-slate-700 dark:text-slate-300 font-medium text-xs ms-2">{{ post.datetime_created }}</span>
+                                        <a href="{% url 'post_edit' post.slug %}" class="text-[12px] bg-pink-500/10 text-pink-500 dark:text-pink-600 rounded font-medium py-1 px-2 inline-block mb-3">EDIT</a>
                                     </div>
                                     <br>
                                     <a href="#"
@@ -67,7 +68,7 @@
                                                     {{ post.text|truncatewords:10 }}</p>
                                             </div>
                                         </div>
-                                        <a href="{% url 'post_detail' post.pk %}"
+                                        <a href="{% url 'post_detail' post.slug %}"
                                            class="block text-slate-500 dark:text-slate-400 hover:text-slate-600 underline decoration-1 decoration-dashed underline-offset-4  decoration-primary-500 font-medium  focus:outline-none self-center">Read
                                             More
                                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"

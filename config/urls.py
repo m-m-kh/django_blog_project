@@ -21,8 +21,9 @@ from django.conf import settings
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    # path('accounts/', include("accounts.urls")),
+    # path('profile/', include("django.contrib.auth.urls")),
     path('profile/', include("accounts.urls")),
-    path('profile/', include("django.contrib.auth.urls")),
     path('', include("blog.urls")),
 ]
 if settings.DEBUG:
