@@ -22,10 +22,15 @@
 {#    <a href="{% url 'account_login' %}">login</a>#}
 {#    <a href="{% url 'account_logout' %}">logout</a>#}
 <a href="{% url 'signup' %}">signup</a>
+<a href="{% url 'login' %}">login</a>
 <form action="{% url 'logout' %}" method="post">
     {% csrf_token %}
     <button type="submit">logout</button>
 </form>
+{{ request.user }}
+{% for message in messages %}
+    {{ message }}
+{% endfor %}
 <!-- leftbar-tab-menu -->
 <div class="h-full w-full">
     <!-- Code block starts -->

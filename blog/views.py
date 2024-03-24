@@ -38,6 +38,7 @@ class PostDetail(LoginRequiredMixin, generic.DetailView, generic.CreateView):
         context['comments'] = paginator.get_page(1 if not page else int(page))
         context['paginator'] = paginator
         context['pp'] = models.CommentReply.objects.filter(to_comment=1)
+
         return context
 
     def form_valid(self, form):

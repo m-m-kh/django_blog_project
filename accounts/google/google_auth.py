@@ -28,9 +28,9 @@ class GoogleAuth:
                 )
 
         if settings.DEBUG:
-            self.flow.redirect_uri = 'http://localhost' + reverse(settings.GOOGLE_AUTH_REDIRECT_URL)
+            self.flow.redirect_uri = 'http://localhost:8000' + reverse(settings.GOOGLE_AUTH_CALLBACK_URL)
         else:
-            self.flow.redirect_uri = request.get_host() + reverse(settings.GOOGLE_AUTH_REDIRECT_URL)
+            self.flow.redirect_uri = request.get_host() + reverse(settings.GOOGLE_AUTH_CALLBACK_URL)
     def generate_login_url(self):
         return self.flow.authorization_url()
         

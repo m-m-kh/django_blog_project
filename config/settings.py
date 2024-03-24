@@ -145,7 +145,7 @@ CRISPY_TEMPLATE_PACK = "tailwind"
 # allauth
 
 AUTHENTICATION_BACKENDS = [
-    # Needed to login by username in Django admin, regardless of `allauth`
+
     'django.contrib.auth.backends.ModelBackend',
 
 ]
@@ -154,6 +154,7 @@ AUTHENTICATION_BACKENDS = [
 
 LOGIN_REDIRECT_URL = 'home'
 LOGOUT_REDIRECT_URL = 'home'
+GOOGLE_AUTH_CALLBACK_URL = 'google_signup_confirm'
 AUTH_USER_MODEL = 'accounts.CustomUser'
 # ACCOUNT_EMAIL_REQUIRED = True
 # ACCOUNT_AUTHENTICATION_METHOD = 'email'
@@ -164,4 +165,3 @@ AUTH_USER_MODEL = 'accounts.CustomUser'
 # ACCOUNT_SIGNUP_REDIRECT_URL = 'home'
 # EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
-GOOGLE_AUTH_REDIRECT_URL = 'signup_confirm'
