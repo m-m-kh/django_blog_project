@@ -1,17 +1,18 @@
+import requests
 from django.shortcuts import render
 from django.views import generic, View
 from django.contrib.auth.forms import UserCreationForm
-from django.shortcuts import redirect, reverse
+from django.shortcuts import redirect, reverse, get_object_or_404
 from django.urls import reverse_lazy
 from django.http import HttpResponse
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth import get_user_model
 
-from .forms import CustomUserCreationForm
+from .forms import CustomUserCreationForm, SetPasswordForm, UserChangeForm
 from .models import CustomUser
 from .google import google_auth
-from django.core.exceptions import RequestAborted
+from django.core.exceptions import RequestAborted, PermissionDenied
 from django.conf import settings
 from django.contrib.auth.forms import AuthenticationForm
 
@@ -23,13 +24,8 @@ class SignUp(View):
             return redirect(settings.LOGIN_REDIRECT_URL)
         return super(SignUp, self).dispatch(request, *args, **kwargs)
     def get(self, request, *args, **kwargs):
-        auth = google_auth.GoogleAuth(request)
-        auth_url = auth.generate_login_url()
-        request.session['auth_url'] = auth_url
-
         form = CustomUserCreationForm()
-        context = {'form':form}
-
+        context = {'form' : form}
         return render(request, self.template_name, context=context)
 
     def post(self, request, *args, **kwargs):
@@ -38,17 +34,16 @@ class SignUp(View):
             cleaned_data = form.cleaned_data
             form = form.save(commit=False)
             form.username = cleaned_data.get('email').split('@')[0]
-
             form.save()
+            return redirect(settings.LOGIN_REDIRECT_URL)
         context = {'form': form}
 
         return render(request, self.template_name, context=context)
 
 
 class GoogleSignUpConfirm(View):
-
     def dispatch(self, request, *args, **kwargs):
-        if request.method == "get":
+        if request.method == "GET":
             if auth_url:=request.session.get('auth_url'):
                 if auth_url[1] != request.GET.get('state'):
                     messages.warning(request, 'try again')
@@ -60,7 +55,6 @@ class GoogleSignUpConfirm(View):
     def get(self, request, *args, **kwargs):
         auth = google_auth.GoogleAuth(request)
         auth_user = auth.get_user_info(url=request.build_absolute_uri().replace('http://', 'https://'))
-        del request.session['auth_url']
         # {'id': '108214459709151642195', 'email': 'khademim092092@gmail.com', 'verified_email': True,
         #  'name': 'Djrj Jfjr', 'given_name': 'Djrj',
         #  'family_name': 'Jfjr',
@@ -69,38 +63,68 @@ class GoogleSignUpConfirm(View):
         email = auth_user['email']
         username = auth_user['email'].split('@')[0]
         profile_id = auth_user['id']
-        password = 'wai'+email+'wai'+profile_id
-        user = get_user_model().objects.get_or_create(email=email,
-                                             username=username)
-        if user[1]:
-            user[0].set_password(password)
-            user[0].save()
-        if user[0].profile_id == '0':
-            user[0].profile_id = profile_id
-            user[0].save()
+        # password = 'wai'+email+'wai'+profile_id
 
-        login(request, user=user[0])
+
+        if not (user := get_user_model().objects.filter(email=email, username=username)):
+            user = get_user_model().objects.create(email=email, username=username)
+        else:
+            user = user[0]
+
+        if not user.password:
+            request.session['user_id'] = user.pk
+            return redirect('google_set_pass')
+
+        if user.profile_id == '0':
+            user.profile_id = profile_id
+            user.save()
+
+        login(request, user=user)
+        del request.session['auth_url']
 
         return redirect(settings.LOGIN_REDIRECT_URL)
 
     def post(self, request, *args, **kwargs):
-        auth_url = request.session.get('auth_url')
+        if request.session.get('user_id'):
+            return redirect('google_set_pass')
+        auth = google_auth.GoogleAuth(request)
+        auth_url = auth.generate_login_url()
+        request.session['auth_url'] = auth_url
         return redirect(auth_url[0])
 
-# class SignUp(View):
-#     pass
-#
+class GoogleSetPass(View):
+
+    # def dispatch(self, request, *args, **kwargs):
+    #     if not request.session.get('user_id'):
+    #         raise PermissionDenied
+    def get(self, request, *args, **kwargs):
+        form = SetPasswordForm()
+        context = {'form': form}
+        return render(request, 'accounts/set_pass.html', context=context)
+
+    def post(self, request, *args, **kwargs):
+        form = SetPasswordForm(request.POST)
+        if form.is_valid():
+            user = get_object_or_404(get_user_model(), pk=request.session['user_id'])
+            user.set_password(form.cleaned_data['password1'])
+            user.save()
+            del request.session['user_id']
+            del request.session['auth_url']
+            return redirect(settings.LOGIN_REDIRECT_URL)
+
+        context = {'form': form}
+        return render(request, 'accounts/set_pass.html', context=context)
+
 class LogIn(View):
     def get(self, request, *args, **kwargs):
         form = AuthenticationForm()
-
         context = {'form': form}
-
         return render(request, 'accounts/login.html', context=context)
     def post(self, request, *args, **kwargs):
         form = AuthenticationForm(request,request.POST)
         if form.is_valid():
             login(request, user=form.get_user())
+            return redirect(settings.LOGIN_REDIRECT_URL)
         context = {'form': form}
 
         return render(request, 'accounts/login.html', context=context)

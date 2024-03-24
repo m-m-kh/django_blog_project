@@ -1,7 +1,8 @@
-from django.contrib.auth.forms import UserCreationForm, UserChangeForm
+from django.contrib.auth.forms import UserCreationForm, UserChangeForm, BaseUserCreationForm
 
 from accounts.models import CustomUser
-
+from django import forms
+from django.utils.translation import gettext as _
 
 class CustomUserCreationForm(UserCreationForm):
     class Meta:
@@ -14,3 +15,7 @@ class CustomUserChangeForm(UserChangeForm):
         model = CustomUser
         fields = "__all__"
 
+class SetPasswordForm(BaseUserCreationForm):
+    class Meta:
+        model = CustomUser
+        fields = ("password1","password2")
