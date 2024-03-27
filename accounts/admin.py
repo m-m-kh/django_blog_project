@@ -12,8 +12,8 @@ class CustomUserAdmin(UserAdmin):
     add_form = CustomUserCreationForm
     form = CustomUserChangeForm
     fieldsets = UserAdmin.fieldsets + (
-        (None, {'fields': ('profile_id',)}),
+        (None, {'fields': ('profile_id','email_confirmed')}),
     )
     add_fieldsets = UserAdmin.add_fieldsets + (
-        (None, {'fields': ('email', 'first_name', 'last_name', 'profile_id',)}),
+        (None, {'fields': ('email', 'first_name', 'last_name', 'profile_id','email_confirmed')}),
     )

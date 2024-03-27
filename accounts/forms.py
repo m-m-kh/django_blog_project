@@ -15,7 +15,3 @@ class CustomUserChangeForm(UserChangeForm):
         model = CustomUser
         fields = "__all__"
 
-class SetPasswordForm(BaseUserCreationForm):
-    class Meta:
-        model = CustomUser
-        fields = ("password1","password2")

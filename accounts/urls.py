@@ -8,5 +8,7 @@ urlpatterns = [
     path('signup/set_password/', views.GoogleSetPass.as_view(), name='google_set_pass'),
     path('login/', views.LogIn.as_view(), name='login'),
     path('logout/', views.LogOut.as_view(), name='logout'),
+    path('confirm_email/<uuid>/<token>/', views.ConfirmEmail.as_view(),name='confirm_email')
+    # path('confirm_email/', views.ConfirmEmail.as_view(),name='confirm_email')
     # path('signup/', , name='signup')
 ]

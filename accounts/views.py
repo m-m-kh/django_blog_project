@@ -9,12 +9,14 @@ from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth import get_user_model
 
-from .forms import CustomUserCreationForm, SetPasswordForm, UserChangeForm
-from .models import CustomUser
+from .forms import CustomUserCreationForm, UserChangeForm
+from .models import CustomUser, EmailConfirmation
 from .google import google_auth
 from django.core.exceptions import RequestAborted, PermissionDenied
 from django.conf import settings
-from django.contrib.auth.forms import AuthenticationForm
+from django.contrib.auth.forms import AuthenticationForm, SetPasswordForm
+from random import randint
+from django.contrib.auth.tokens import default_token_generator
 
 
 class SignUp(View):
@@ -35,11 +37,20 @@ class SignUp(View):
             form = form.save(commit=False)
             form.username = cleaned_data.get('email').split('@')[0]
             form.save()
-            return redirect(settings.LOGIN_REDIRECT_URL)
+            token = default_token_generator.make_token(user=form)
+            email_confirmation = EmailConfirmation()
+            email_confirmation.user = form
+            email_confirmation.code = randint(100000,999999)
+            email_confirmation.save()
+
+            return redirect('confirm_email', uuid=email_confirmation.pk, token=token)
         context = {'form': form}
 
         return render(request, self.template_name, context=context)
 
+class ConfirmEmail(View):
+    def get(self, request, *args, **kwargs):
+        return HttpResponse('w')
 
 class GoogleSignUpConfirm(View):
     def dispatch(self, request, *args, **kwargs):
@@ -98,16 +109,16 @@ class GoogleSetPass(View):
     #     if not request.session.get('user_id'):
     #         raise PermissionDenied
     def get(self, request, *args, **kwargs):
-        form = SetPasswordForm()
+        user = get_object_or_404(get_user_model(), pk=request.session['user_id'])
+        form = SetPasswordForm(user)
         context = {'form': form}
         return render(request, 'accounts/set_pass.html', context=context)
 
     def post(self, request, *args, **kwargs):
-        form = SetPasswordForm(request.POST)
+        user = get_object_or_404(get_user_model(), pk=request.session['user_id'])
+        form = SetPasswordForm(user, request.POST)
         if form.is_valid():
-            user = get_object_or_404(get_user_model(), pk=request.session['user_id'])
-            user.set_password(form.cleaned_data['password1'])
-            user.save()
+            form.save()
             del request.session['user_id']
             del request.session['auth_url']
             return redirect(settings.LOGIN_REDIRECT_URL)
@@ -137,3 +148,15 @@ class LogOut(View):
     def post(self, request, *args, **kwargs):
         logout(request)
         return redirect(settings.LOGIN_REDIRECT_URL)
+
+# from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
+# from django.utils.encoding import force_bytes,force_str
+# from django.contrib.auth.tokens import default_token_generator
+# class Test(View):
+#     def get(self, request):
+#         user = get_user_model().objects.last()
+#         'c4hxh2-4b46a9446b89633259188ce10bf26074'
+#         'c4hxgy-a156dfe1096e668b3bd4687fc4190580'
+#         'c4hxgw-e832df422fd6af51aea6376562da898e'
+#         print(default_token_generator.check_token(user,'c4hxgw-e832df422fd6awf51aea6376562da898e'))
+#         return HttpResponse('w')
